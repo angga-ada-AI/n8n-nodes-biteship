@@ -1,5 +1,5 @@
 {
-    "name": "n8n-nodes-biteship",
+    "name": "@angga-ada-ai/n8n-nodes-biteship",
     "version": "0.1.0",
     "description": "n8n nodes for Biteship API integration",
     "keywords": ["n8n-community", "biteship", "logistics", "automation"],
@@ -7,7 +7,7 @@
     "author": "Your Name",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/your-organization/n8n-nodes-biteship.git"
+        "url": "git+https://github.com/adaAI-apps/n8n-nodes-biteship.git"
     },
     "main": "index.js",
     "scripts": {
