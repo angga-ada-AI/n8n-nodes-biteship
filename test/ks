@@ -1,0 +1,72 @@
+// Parse and prepare data for Biteship API
+// Try multiple input sources to handle different workflow trigger formats
+let input = $items.all()
+console.log(input);
+
+try {
+  // Try different input paths
+  input = $input.first().json.query || 
+          $input.first().json || 
+          $input.all()[0].json || 
+          $input.all()[0] || 
+          {};
+} catch (error) {
+  console.error('Error accessing input:', error.message);
+  input = {};
+}
+
+// Log raw input for debugging
+console.log('Raw input:', JSON.stringify(input));
+
+// Normalize field names to handle case variations
+const normalizeField = (obj, field) => {
+  if (!obj) return undefined;
+  const keys = Object.keys(obj);
+  const lowerField = field.toLowerCase();
+  const matchingKey = keys.find(key => key.toLowerCase() === lowerField);
+  return matchingKey ? obj[matchingKey] : undefined;
+};
+
+// Parse items if it's a string
+let itemsData;
+try {
+  const itemsField = normalizeField(input, 'items') || input.items;
+  if (typeof itemsField === 'string') {
+    itemsData = JSON.parse(itemsField);
+  } else {
+    itemsData = itemsField || [];
+  }
+} catch (error) {
+  console.error('Error parsing items:', error.message);
+  // Fallback with default item
+  itemsData = [{
+    name: 'Default Item',
+    value: input.total_amount || 50000,
+    weight: 500,
+    quantity: input.quantity || 1
+  }];
+}
+
+// Ensure items is an array and has required fields
+if (!Array.isArray(itemsData)) {
+  itemsData = [itemsData];
+}
+
+// Validate and format items
+itemsData = itemsData.map(item => ({
+  name: item.name || 'Default Item',
+  value: parseInt(item.value) || 50000,
+  weight: parseInt(item.weight) || 500,
+  quantity: parseInt(item.quantity) || 1
+}));
+
+// Validate postal codes
+const originPostalCode = normalizeField(input, 'originPostalCode') || input.originPostalCode || '10450';
+const destinationPostalCode = normalizeField(input, 'destinationPostalCode') || input.destinationPostalCode;
+
+
+return {
+  originPostalCode,
+  destinationPostalCode,
+  items: itemsData
+};

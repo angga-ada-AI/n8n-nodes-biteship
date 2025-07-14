@@ -5,4 +5,7 @@ tmp
 dist
 npm-debug.log*
 yarn.lock
+test.http
+test.js
+test.json
 .vscode/launch.json
